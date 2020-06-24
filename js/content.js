@@ -29,22 +29,24 @@ function changePage(listTickers) {
                     return item?.symbol?.ticker;
                 }).indexOf(possibleTicker);
                 if (elementPos > -1) {
-                    return {
-                        name: 'a',
-                        attrs: {
-                            "href": listTickers[elementPos].symbol.link,
-                            "target": '_blank',
-                            "title": 'Открыть на странице брокера',
-                            "style": result.iscolor ? `background-color: ${result.color}` : '',
-                        },
-                        content: {
-                            name: 'b',
-                            content: possibleTicker
-                                .concat(listTickers[elementPos].symbol.isOTC && result.OTC ? '👑' : '')
-                                .concat(listTickers[elementPos].prices && result.price ? ` (${listTickers[elementPos].prices.last.value}${SHORT_CUR[listTickers[elementPos].prices.last.currency]})` : '')
+                    return [
+                        possibleTicker,
+                        {
+                            name: 'a',
+                            attrs: {
+                                "href": listTickers[elementPos].symbol.link,
+                                "target": '_blank',
+                                "title": 'Открыть на странице брокера',
+                                "style": result.iscolor ? `background-color: ${result.color}` : '',
+                            },
+                            content: {
+                                name: 'b',
+                                content: ''
+                                    .concat(listTickers[elementPos].symbol.isOTC && result.OTC ? '👑' : '🔗')
+                                    .concat(listTickers[elementPos].prices.last && result.price ? ` (${listTickers[elementPos].prices.last.value}${SHORT_CUR[listTickers[elementPos].prices.last.currency]})` : '')
 
-                        }
-                    };
+                            }
+                        }];
                 } else
                     return possibleTicker;
             });
