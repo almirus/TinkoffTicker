@@ -1,6 +1,6 @@
 'use strict';
 
-import {INFO_URL, PLURAL_SECURITY_TYPE, SEARCH_URL, SYMBOL_LINK} from "/js/constants.mjs";
+import {FAVORITE_URL, INFO_URL, PLURAL_SECURITY_TYPE, SEARCH_URL, SYMBOL_LINK} from "/js/constants.mjs";
 
 
 chrome.runtime.onConnect.addListener(port => {
@@ -26,38 +26,38 @@ chrome.runtime.onConnect.addListener(port => {
 // создаем список объектов с инф о тикере от брокера
 async function createLinks(params, sessionId) {
     if (params.list.length > 0) {
-        return await Promise.all(params.list.map(async item => {
-            let json = await findTicker(item, sessionId);
-            // берем первый из списка найденных
-            if (json.payload.values.length > 0)
-                return {
-                    prices: json.payload.values[0].prices,
-                    symbol: {
-                        ticker: json.payload.values[0].symbol.ticker,
-                        showName: json.payload.values[0].symbol.showName,
-                        lotSize: json.payload.values[0].symbol.lotSize,
-                        isOTC: json.payload.values[0].symbol.isOTC,
-                        link: `${SYMBOL_LINK.replace('${securityType}', PLURAL_SECURITY_TYPE[json.payload.values[0].symbol.symbolType || 'Stock'])}${json.payload.values[0].symbol.ticker}`,
-                    },
-                    exchangeStatus: json.payload.values[0].exchangeStatus
-                }
-            else return undefined;
-        }))
-    }
+        let json = await findTickers(params.list, sessionId);
+        if (json.payload.values.length > 0)
+            return json.payload.values.map(item => (
+                    {
+                        prices: item.prices,
+                        symbol: {
+                            ticker: item.symbol.ticker,
+                            showName: item.symbol.showName,
+                            lotSize: item.symbol.lotSize,
+                            isOTC: item.symbol.isOTC,
+                            link: `${SYMBOL_LINK.replace('${securityType}', PLURAL_SECURITY_TYPE[item.symbol.symbolType || 'Stock'])}${item.symbol.ticker}`,
+                        },
+                        exchangeStatus: item.exchangeStatus
+                    }
+                )
+            )
+        else return undefined;
+    } else return  undefined;
 }
 
-function findTicker(search, session_id) {
+function findTickers(search, session_id) {
     return new Promise((resolve, reject) => {
             // POST
             fetch(SEARCH_URL + session_id, {
                 method: "POST",
                 body: JSON.stringify({
                     start: 0,
-                    end: 1,
+                    end: 100,
                     sortType: "ByName",
                     orderType: "Asc",
                     country: "All",
-                    filter: search
+                    tickers: search
                 }),
                 headers: {
                     'Accept': 'application/json',
@@ -131,4 +131,32 @@ function getTCSsession() {
             }
         });
     })
+}
+
+// список Избранного
+function getFavorite() {
+    return new Promise((resolve, reject) => {
+        getTCSsession().then(sessionId => {
+            fetch(FAVORITE_URL + sessionId)
+                .then(response => response.json())
+                .then(json => {
+                    console.log('list of Favourite');
+                    let return_data = [];
+                    json.payload.stocks.forEach(item => {
+                        return_data.push({
+                            symbol: {
+                                showName: item.symbol.showName,
+                                isin: item.symbol.isin,
+                                ticker: item.symbol.ticker,
+                                symbolType: item.symbol.symbolType
+                            }
+                        });
+                    });
+                    resolve(return_data);
+                }).catch(function (ex) {
+                console.log('parsing failed', ex);
+                reject([]);
+            })
+        })
+    });
 }

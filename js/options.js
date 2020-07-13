@@ -1,6 +1,13 @@
 'use strict';
 
-import {OPTION_COLOR, OPTION_COSMETICS, OPTION_ISCOLOR, OPTION_OTC, OPTION_PRICE} from "/js/constants.mjs";
+import {
+    OPTION_COLOR,
+    OPTION_COSMETICS,
+    OPTION_FAVOURITE,
+    OPTION_ISCOLOR,
+    OPTION_OTC,
+    OPTION_PRICE
+} from "/js/constants.mjs";
 
 
 // сохраняем применение косметического фильтра
@@ -67,4 +74,17 @@ document.getElementById(OPTION_PRICE).addEventListener('change', function (e) {
 chrome.storage.sync.get([OPTION_PRICE], function (result) {
     console.log('get price filter option');
     document.getElementById(OPTION_PRICE).checked = result[OPTION_PRICE] === true;
+});
+
+// подгружаем настройки
+chrome.storage.sync.get([OPTION_FAVOURITE], function (result) {
+    console.log('get only favourite filter option');
+    document.getElementById(OPTION_FAVOURITE).checked = result[OPTION_FAVOURITE] === true;
+});
+
+// сохраняем применение цвета
+document.getElementById(OPTION_FAVOURITE).addEventListener('change', function (e) {
+    chrome.storage.sync.set({[OPTION_FAVOURITE]: e.target.value}, function () {
+        console.log('only favourite option set to ' + e.target.value);
+    })
 });

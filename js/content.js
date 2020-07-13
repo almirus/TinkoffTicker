@@ -6,6 +6,7 @@ const
 const SHORT_CUR = {
     USD: '$',
     RUB: '₽',
+    EUR: '€'
 };
 // слушатель, получение сообщений из background.js
 port.onMessage.addListener(msg => {
@@ -22,7 +23,7 @@ port.onMessage.addListener(msg => {
 function changePage(listTickers) {
     if (!listTickers || listTickers.length === 0) return
     let textNodes = findAllTextNodes(document.body);
-    chrome.storage.sync.get(['OTC', 'price', 'iscolor', 'color'], result => {
+    chrome.storage.sync.get(['OTC', 'price', 'iscolor', 'color', 'favourite'], result => {
         textNodes.forEach(textNode => {
             textNodeReplace(textNode, SEARCH_EXP, possibleTicker => {
                 let elementPos = listTickers.map(item => {

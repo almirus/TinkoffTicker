@@ -2,7 +2,7 @@
   "update_url": "https://clients2.google.com/service/update2/crx",
   "manifest_version": 2,
   "name": "TinkoffTicker",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "Плагин добавляет на страницы тикеры",
   "icons": {
     "16": "/icons/icon16.png",
