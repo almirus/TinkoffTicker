@@ -76,15 +76,15 @@ chrome.storage.sync.get([OPTION_PRICE], function (result) {
     document.getElementById(OPTION_PRICE).checked = result[OPTION_PRICE] === true;
 });
 
-// подгружаем настройки
+// подгружаем настройки фильтрации избранного
 chrome.storage.sync.get([OPTION_FAVOURITE], function (result) {
     console.log('get only favourite filter option');
     document.getElementById(OPTION_FAVOURITE).checked = result[OPTION_FAVOURITE] === true;
 });
 
-// сохраняем применение цвета
+// сохраняем фильтрации избранного
 document.getElementById(OPTION_FAVOURITE).addEventListener('change', function (e) {
-    chrome.storage.sync.set({[OPTION_FAVOURITE]: e.target.value}, function () {
-        console.log('only favourite option set to ' + e.target.value);
+    chrome.storage.sync.set({[OPTION_FAVOURITE]: e.target.checked}, function () {
+        console.log('only favourite option set to ' + e.target.checked);
     })
 });

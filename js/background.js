@@ -10,12 +10,15 @@ chrome.runtime.onConnect.addListener(port => {
         switch (msg.method) {
             case 'getTickers':
                 getTCSsession().then(sessionId => {
-                    createLinks(msg.params, sessionId).then(list => {
-                        console.log("send message Links .....");
-                        let result = {};
-                        result['method'] = 'setLinks';
-                        result['list'] = list;
-                        port.postMessage(result);
+                    getFavorite(sessionId).then(favourite => {
+                        let unique = msg.params.isFavourite ? msg.params.list.filter(el => favourite.includes(el)) : msg.params.list;
+                        createLinks(unique, sessionId).then(list => {
+                            console.log("send message Links .....");
+                            let result = {};
+                            result['method'] = 'setLinks';
+                            result['list'] = list;
+                            port.postMessage(result);
+                        });
                     });
                 });
                 break;
@@ -24,9 +27,9 @@ chrome.runtime.onConnect.addListener(port => {
 });
 
 // создаем список объектов с инф о тикере от брокера
-async function createLinks(params, sessionId) {
-    if (params.list.length > 0) {
-        let json = await findTickers(params.list, sessionId);
+async function createLinks(list, sessionId) {
+    if (list.length > 0) {
+        let json = await findTickers(list, sessionId);
         if (json.payload.values.length > 0)
             return json.payload.values.map(item => (
                     {
@@ -43,7 +46,7 @@ async function createLinks(params, sessionId) {
                 )
             )
         else return undefined;
-    } else return  undefined;
+    } else return undefined;
 }
 
 function findTickers(search, session_id) {
@@ -134,29 +137,25 @@ function getTCSsession() {
 }
 
 // список Избранного
-function getFavorite() {
+function getFavorite(sessionId) {
     return new Promise((resolve, reject) => {
-        getTCSsession().then(sessionId => {
-            fetch(FAVORITE_URL + sessionId)
-                .then(response => response.json())
-                .then(json => {
-                    console.log('list of Favourite');
-                    let return_data = [];
-                    json.payload.stocks.forEach(item => {
-                        return_data.push({
-                            symbol: {
-                                showName: item.symbol.showName,
-                                isin: item.symbol.isin,
-                                ticker: item.symbol.ticker,
-                                symbolType: item.symbol.symbolType
-                            }
-                        });
+        fetch(FAVORITE_URL + sessionId)
+            .then(response => response.json())
+            .then(json => {
+                console.log('list of Favourite');
+                let return_data = [];
+                [].concat(json.payload.stocks)
+                    .concat(json.payload.bonds)
+                    .concat(json.payload.currencies)
+                    .concat(json.payload.etf)
+                    .concat(json.payload.isgs)
+                    .forEach(item => {
+                        return_data.push(item.symbol.ticker);
                     });
-                    resolve(return_data);
-                }).catch(function (ex) {
-                console.log('parsing failed', ex);
-                reject([]);
-            })
+                resolve(return_data);
+            }).catch(function (ex) {
+            console.log('parsing failed', ex);
+            reject([]);
         })
     });
 }

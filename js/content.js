@@ -101,12 +101,14 @@ function changePage(listTickers) {
 // функция получает все тикеры по REGEXP со страницы и шлет его для обработки в background.js
 function createTickerLinks() {
     console.log('TinkoffTicker extension apply custom links');
-    let matches = [...document.body.innerText.matchAll(SEARCH_EXP)];
-    // разворачиваем многомерный массив, в [0] хранятся найденные тикеры
-    let tickers = matches.reduce((previousValue, currentValue, index, array) => previousValue.concat(array[index][0]), []);
-    let unique = [...new Set(tickers)];
-    console.log(unique);
-    port.postMessage({method: "getTickers", params: {list: unique}});
+    chrome.storage.sync.get(['favourite'], result => {
+        let matches = [...document.body.innerText.matchAll(SEARCH_EXP)];
+        // разворачиваем многомерный массив, в [0] хранятся найденные тикеры
+        let tickers = matches.reduce((previousValue, currentValue, index, array) => previousValue.concat(array[index][0]), []);
+        let unique = [...new Set(tickers)];
+        console.log(unique);
+        port.postMessage({method: "getTickers", params: {list: unique, isFavourite: result.favourite}});
+    });
 }
 
 // восстанавливаем исходную страницу, удаляем добавленные ссылки
