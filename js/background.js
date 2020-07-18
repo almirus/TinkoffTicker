@@ -9,9 +9,13 @@ chrome.runtime.onConnect.addListener(port => {
         console.log("Background - message received " + JSON.stringify(msg));
         switch (msg.method) {
             case 'getTickers':
-                getTCSsession().then(sessionId => {
-                    getFavorite(sessionId).then(favourite => {
-                        let unique = msg.params.isFavourite ? msg.params.list.filter(el => favourite.includes(el)) : msg.params.list;
+                (async () => {
+                        let sessionId = await getTCSsession();
+                        let unique = msg.params.list;
+                        if (sessionId && msg.params.isFavourite) {
+                            let favourite = await getFavorite(sessionId);
+                            unique = msg.params.list.filter(el => favourite.includes(el));
+                        }
                         createLinks(unique, sessionId).then(list => {
                             console.log("send message Links .....");
                             let result = {};
@@ -19,8 +23,8 @@ chrome.runtime.onConnect.addListener(port => {
                             result['list'] = list;
                             port.postMessage(result);
                         });
-                    });
-                });
+                    }
+                )()
                 break;
         }
     })
@@ -131,6 +135,7 @@ function getTCSsession() {
                 });
             } else {
                 console.log('psid not found');
+                resolve(undefined);
             }
         });
     })
