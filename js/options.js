@@ -108,11 +108,13 @@ document.getElementById(OPTION_SHORTLONG).addEventListener('change', function (e
 chrome.storage.sync.get([OPTION_ACTIVELINK], function (result) {
     console.log('get active link option');
     document.getElementById(OPTION_ACTIVELINK).checked = result[OPTION_ACTIVELINK] === true;
+    document.getElementById(OPTION_ISCOLOR).disabled = !result[OPTION_ACTIVELINK] === true
 });
 
 // сохраняем фильтрации избранного
 document.getElementById(OPTION_ACTIVELINK).addEventListener('change', function (e) {
     chrome.storage.sync.set({[OPTION_ACTIVELINK]: e.target.checked}, function () {
         console.log('active link option set to ' + e.target.checked);
+        document.getElementById(OPTION_ISCOLOR).disabled = !e.target.checked
     })
 });
