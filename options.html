@@ -12,15 +12,14 @@
         <fieldset class="table">
             <legend>Настройки</legend>
             <input type="checkbox" value="0" name="cosmetic" id="cosmetic">
-            <label for="cosmetic">Включить плагин (тикеры на сайтах будут заменяться на ссылки Тинькоф Брокера иконкой 🔗)</label>
-            <ul>
-                <li>finance.yahoo.com
-                <li>finviz.com
-                <li>investing.com
-                <li>tradingview.com
-            </ul>
+            <label for="cosmetic">Включить плагин</label>
+            <br>
+            <input type="checkbox" value="0" name="activelink" id="activelink">
+            <label for="activelink">Добавлять ссылки, если выключено - только текст рядом с тикером</label>
+            <br>
             <input type="checkbox" value="0" name="favourite" id="favourite">
-            <label for="favourite">Заменять тикеры только из списка "Избранного" у брокера (будут заменяться только ссылки из Избранного, нужно быть залогененным)</label>
+            <label for="favourite">Заменять тикеры только из списка "Избранного" у брокера (будет работать только если вы
+                <a href="https://www.tinkoff.ru/login/" target="_blank">залогенены</a> у брокера)</label>
             <br>
             <input type="checkbox" value="0" name="shortlong" id="shortlong">
             <label for="shortlong">Выводить доступность шорта\лонга (S\L)</label>
@@ -36,7 +35,14 @@
                 <a href="https://www.tinkoff.ru/login/" target="_blank">залогенены</a> у брокера)</label>
             <hr>
             <small>Пока не работает на динамических сайтах; отрисовка и обновление цен только при обновлении страницы<br>
-            Нашли проблему, <a href="https://github.com/almirus/TinkoffTicker/issues" target="_blank">напишите</a></small>
+            Нашли проблему, <a href="https://github.com/almirus/TinkoffTicker/issues" target="_blank">напишите</a></small><br>
+            Обрабатываются следующие сайты
+            <ul>
+                <li>finance.yahoo.com
+                <li>finviz.com
+                <li>investing.com
+                <li>tradingview.com
+            </ul>
         </fieldset>
     </div>
 </div>

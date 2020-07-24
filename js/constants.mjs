@@ -16,6 +16,7 @@ export const OPTION_COLOR = 'color';
 export const OPTION_PRICE = 'price';
 export const OPTION_FAVOURITE = 'favourite';
 export const OPTION_SHORTLONG = 'shortlong';
+export const OPTION_ACTIVELINK = 'activelink';
 export const USD_RUB = 'USDRUB';
 export const EUR_RUB = 'EURRUB';
 

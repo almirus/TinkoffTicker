@@ -1,6 +1,7 @@
 'use strict';
 
 import {
+    OPTION_ACTIVELINK,
     OPTION_COLOR,
     OPTION_COSMETICS,
     OPTION_FAVOURITE,
@@ -100,5 +101,18 @@ chrome.storage.sync.get([OPTION_SHORTLONG], function (result) {
 document.getElementById(OPTION_SHORTLONG).addEventListener('change', function (e) {
     chrome.storage.sync.set({[OPTION_SHORTLONG]: e.target.checked}, function () {
         console.log('short long option set to ' + e.target.checked);
+    })
+});
+
+// подгружаем настройки активная ссылка
+chrome.storage.sync.get([OPTION_ACTIVELINK], function (result) {
+    console.log('get active link option');
+    document.getElementById(OPTION_ACTIVELINK).checked = result[OPTION_ACTIVELINK] === true;
+});
+
+// сохраняем фильтрации избранного
+document.getElementById(OPTION_ACTIVELINK).addEventListener('change', function (e) {
+    chrome.storage.sync.set({[OPTION_ACTIVELINK]: e.target.checked}, function () {
+        console.log('active link option set to ' + e.target.checked);
     })
 });

@@ -23,7 +23,7 @@ port.onMessage.addListener(msg => {
 function changePage(listTickers) {
     if (!listTickers || listTickers.length === 0) return
     let textNodes = findAllTextNodes(document.body);
-    chrome.storage.sync.get(['OTC', 'price', 'iscolor', 'color', 'favourite', 'shortlong'], result => {
+    chrome.storage.sync.get(['OTC', 'price', 'iscolor', 'color', 'favourite', 'shortlong', 'activelink'], option => {
         textNodes.forEach(textNode => {
             textNodeReplace(textNode, SEARCH_EXP, possibleTicker => {
                 let elementPos = listTickers.map(item => {
@@ -33,23 +33,25 @@ function changePage(listTickers) {
                     return [
                         possibleTicker,
                         {
-                            name: 'a',
-                            attrs: {
-                                "href": listTickers[elementPos].symbol.link,
-                                "target": '_blank',
-                                "title": 'Открыть на странице брокера',
-                                "style": result.iscolor ? `background-color: ${result.color}` : '',
-                            },
+                            ...(option.activelink && {
+                                name: 'a',
+                                attrs: {
+                                    "href": listTickers[elementPos].symbol.link,
+                                    "target": '_blank',
+                                    "title": 'Открыть на странице брокера',
+                                    "style": option.iscolor ? `background-color: ${option.color}` : '',
+                                }
+                            }),
                             content: {
                                 name: 'b',
                                 content: ''
-                                    .concat(listTickers[elementPos].symbol.isOTC && result.OTC ? '👑' : '🔗')
-                                    .concat(result.shortlong ? (
+                                    .concat(listTickers[elementPos].symbol.isOTC && option.OTC ? '👑' : '🔗')
+                                    .concat(option.shortlong ? (
                                         (listTickers[elementPos].symbol.shortIsEnabled ? 'S' : '') +
                                         '/' +
                                         (listTickers[elementPos].symbol.shortIsEnabled ? 'L' : '')
                                     ) : '')
-                                    .concat(listTickers[elementPos].prices.last && result.price ? ` (${listTickers[elementPos].prices.last.value}${SHORT_CUR[listTickers[elementPos].prices.last.currency]})` : '')
+                                    .concat(listTickers[elementPos].prices.last && option.price ? ` (${listTickers[elementPos].prices.last.value}${SHORT_CUR[listTickers[elementPos].prices.last.currency]})` : '')
 
                             }
                         }];
