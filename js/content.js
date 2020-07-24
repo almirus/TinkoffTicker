@@ -23,7 +23,7 @@ port.onMessage.addListener(msg => {
 function changePage(listTickers) {
     if (!listTickers || listTickers.length === 0) return
     let textNodes = findAllTextNodes(document.body);
-    chrome.storage.sync.get(['OTC', 'price', 'iscolor', 'color', 'favourite'], result => {
+    chrome.storage.sync.get(['OTC', 'price', 'iscolor', 'color', 'favourite', 'shortlong'], result => {
         textNodes.forEach(textNode => {
             textNodeReplace(textNode, SEARCH_EXP, possibleTicker => {
                 let elementPos = listTickers.map(item => {
@@ -44,6 +44,11 @@ function changePage(listTickers) {
                                 name: 'b',
                                 content: ''
                                     .concat(listTickers[elementPos].symbol.isOTC && result.OTC ? '👑' : '🔗')
+                                    .concat(result.shortlong ? (
+                                        (listTickers[elementPos].symbol.shortIsEnabled ? 'S' : '') +
+                                        '/' +
+                                        (listTickers[elementPos].symbol.shortIsEnabled ? 'L' : '')
+                                    ) : '')
                                     .concat(listTickers[elementPos].prices.last && result.price ? ` (${listTickers[elementPos].prices.last.value}${SHORT_CUR[listTickers[elementPos].prices.last.currency]})` : '')
 
                             }

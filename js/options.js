@@ -6,7 +6,8 @@ import {
     OPTION_FAVOURITE,
     OPTION_ISCOLOR,
     OPTION_OTC,
-    OPTION_PRICE
+    OPTION_PRICE,
+    OPTION_SHORTLONG
 } from "/js/constants.mjs";
 
 
@@ -86,5 +87,18 @@ chrome.storage.sync.get([OPTION_FAVOURITE], function (result) {
 document.getElementById(OPTION_FAVOURITE).addEventListener('change', function (e) {
     chrome.storage.sync.set({[OPTION_FAVOURITE]: e.target.checked}, function () {
         console.log('only favourite option set to ' + e.target.checked);
+    })
+});
+
+// подгружаем настройки шорт лонг
+chrome.storage.sync.get([OPTION_SHORTLONG], function (result) {
+    console.log('get short long option');
+    document.getElementById(OPTION_SHORTLONG).checked = result[OPTION_SHORTLONG] === true;
+});
+
+// сохраняем фильтрации избранного
+document.getElementById(OPTION_SHORTLONG).addEventListener('change', function (e) {
+    chrome.storage.sync.set({[OPTION_SHORTLONG]: e.target.checked}, function () {
+        console.log('short long option set to ' + e.target.checked);
     })
 });

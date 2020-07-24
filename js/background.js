@@ -44,6 +44,8 @@ async function createLinks(list, sessionId) {
                             lotSize: item.symbol.lotSize,
                             isOTC: item.symbol.isOTC,
                             link: `${SYMBOL_LINK.replace('${securityType}', PLURAL_SECURITY_TYPE[item.symbol.symbolType || 'Stock'])}${item.symbol.ticker}`,
+                            longIsEnabled:item.symbol.longIsEnabled,
+                            shortIsEnabled:item.symbol.shortIsEnabled
                         },
                         exchangeStatus: item.exchangeStatus
                     }
