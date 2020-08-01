@@ -1,4 +1,4 @@
-const SEARCH_EXP = /\b[A-Z]{2,6}|\$[a-z]{2,6}\b/gm;
+const SEARCH_EXP = /\b[A-Z]{2,6}\b/gm;
 const
     port = chrome.runtime.connect({
         name: "TinkoffTicker"
@@ -23,7 +23,7 @@ port.onMessage.addListener(msg => {
 function changePage(listTickers) {
     if (!listTickers || listTickers.length === 0) return
     let textNodes = findAllTextNodes(document.body);
-    chrome.storage.sync.get(['OTC', 'price', 'iscolor', 'color', 'favourite', 'shortlong', 'activelink'], option => {
+    chrome.storage.sync.get(['OTC', 'price', 'iscolor', 'color', 'favourite', 'shortlong', 'activelink', 'isstyle', 'style'], option => {
         textNodes.forEach(textNode => {
             textNodeReplace(textNode, SEARCH_EXP, possibleTicker => {
                 let elementPos = listTickers.map(item => {
@@ -31,7 +31,16 @@ function changePage(listTickers) {
                 }).indexOf(possibleTicker);
                 if (elementPos > -1) {
                     return [
-                        possibleTicker,
+                        {
+                            ...(option.isstyle && {
+                                name: 'span',
+                                attrs: {
+                                    "style": option.style,
+                                }
+                            }),
+                            content: possibleTicker,
+
+                        },
                         {
                             ...(option.activelink && {
                                 name: 'a',

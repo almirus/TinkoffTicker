@@ -6,9 +6,11 @@ import {
     OPTION_COSMETICS,
     OPTION_FAVOURITE,
     OPTION_ISCOLOR,
+    OPTION_ISSTYLE,
     OPTION_OTC,
     OPTION_PRICE,
-    OPTION_SHORTLONG
+    OPTION_SHORTLONG,
+    OPTION_STYLE
 } from "/js/constants.mjs";
 
 
@@ -116,5 +118,33 @@ document.getElementById(OPTION_ACTIVELINK).addEventListener('change', function (
     chrome.storage.sync.set({[OPTION_ACTIVELINK]: e.target.checked}, function () {
         console.log('active link option set to ' + e.target.checked);
         document.getElementById(OPTION_ISCOLOR).disabled = !e.target.checked
+    })
+});
+
+// подгружаем настройки применение стиля
+chrome.storage.sync.get([OPTION_ISSTYLE], function (result) {
+    console.log('style link option');
+    document.getElementById(OPTION_ISSTYLE).checked = result[OPTION_ISSTYLE] === true;
+    document.getElementById(OPTION_STYLE).disabled = !result[OPTION_ISSTYLE] === true
+});
+
+// сохраняем фильтрации избранного
+document.getElementById(OPTION_ISSTYLE).addEventListener('change', function (e) {
+    chrome.storage.sync.set({[OPTION_ISSTYLE]: e.target.checked}, function () {
+        console.log('style option set to ' + e.target.checked);
+        document.getElementById(OPTION_STYLE).disabled = !e.target.checked
+    })
+});
+
+// подгружаем стиль
+chrome.storage.sync.get([OPTION_STYLE], function (result) {
+    console.log('get style filter option');
+    document.getElementById(OPTION_STYLE).value = result[OPTION_STYLE];
+});
+
+// сохраняем применение цены
+document.getElementById(OPTION_STYLE).addEventListener('change', function (e) {
+    chrome.storage.sync.set({[OPTION_STYLE]: e.target.value}, function () {
+        console.log('style option set to ' + e.target.value);
     })
 });

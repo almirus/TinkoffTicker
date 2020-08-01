@@ -37,7 +37,7 @@
         "*://*.tradingview.com/*",
         "*://earningswhispers.com/*"
       ],
-      "run_at": "document_end",
+      "run_at": "document_idle",
       "js": [
         "/js/content.js"
       ]
