@@ -58,7 +58,7 @@ function changePage(listTickers) {
                                     .concat(option.shortlong ? (
                                         (listTickers[elementPos].symbol.shortIsEnabled ? 'S' : '') +
                                         '/' +
-                                        (listTickers[elementPos].symbol.shortIsEnabled ? 'L' : '')
+                                        (listTickers[elementPos].symbol.longIsEnabled ? 'L' : '')
                                     ) : '')
                                     .concat(listTickers[elementPos].prices.last && option.price ? ` (${listTickers[elementPos].prices.last.value}${SHORT_CUR[listTickers[elementPos].prices.last.currency]})` : '')
 
