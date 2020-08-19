@@ -2,7 +2,7 @@
   "update_url": "https://clients2.google.com/service/update2/crx",
   "manifest_version": 2,
   "name": "TinkoffTicker",
-  "version": "0.0.9",
+  "version": "0.0.91",
   "description": "Плагин добавляет на страницы тикеры",
   "icons": {
     "16": "/icons/icon16.png",
@@ -17,7 +17,8 @@
     "*://*.finviz.com/*",
     "*://*.investing.com/*",
     "*://*.tradingview.com/*",
-    "*://*.earningswhispers.com/*"
+    "*://*.earningswhispers.com/*",
+    "*://*.seekingalpha.com/*"
   ],
   "browser_action": {
     "default_title": "Tinkoff Ticker",
@@ -35,7 +36,8 @@
         "*://*.finviz.com/*",
         "*://*.investing.com/*",
         "*://*.tradingview.com/*",
-        "*://*.earningswhispers.com/*"
+        "*://*.earningswhispers.com/*",
+        "*://*.seekingalpha.com/*"
       ],
       "run_at": "document_idle",
       "js": [
