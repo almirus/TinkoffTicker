@@ -23,14 +23,18 @@ port.onMessage.addListener(msg => {
 function changePage(listTickers) {
     if (!listTickers || listTickers.length === 0) return
     let textNodes = findAllTextNodes(document.body);
-    chrome.storage.sync.get(['OTC', 'price', 'iscolor', 'color', 'favourite', 'shortlong', 'activelink', 'isstyle', 'style'], option => {
+    chrome.storage.sync.get(['OTC', 'price', 'iscolor', 'color', 'favourite', 'shortlong', 'activelink', 'isstyle', 'style', 'isblacklist', 'blacklist'], option => {
         textNodes.forEach(textNode => {
             textNodeReplace(textNode, SEARCH_EXP, possibleTicker => {
+                // массив черного списка тикеров
+                let blacklist = option.isblacklist ? option.blacklist.toUpperCase().split(' ') : [];
                 let elementPos = listTickers.map(item => {
                     return item?.symbol?.ticker;
                 }).indexOf(possibleTicker);
-                if (elementPos > -1) {
+                // если нашли элемент и он не в черном списке
+                if (elementPos > -1 && !blacklist.includes(possibleTicker)) {
                     return [
+                        // в "объект для замены" обрамляем в стиль
                         {
                             ...(option.isstyle && {
                                 name: 'span',
@@ -41,6 +45,7 @@ function changePage(listTickers) {
                             content: possibleTicker,
 
                         },
+                        // в "объект для замены" обрамляем ссылкой
                         {
                             ...(option.activelink && {
                                 name: 'a',
@@ -51,6 +56,7 @@ function changePage(listTickers) {
                                     "style": option.iscolor ? `background-color: ${option.color}` : '',
                                 }
                             }),
+                            // добавляем emoji цену шорт лонг
                             content: {
                                 name: 'b',
                                 content: ''

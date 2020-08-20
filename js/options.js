@@ -2,9 +2,11 @@
 
 import {
     OPTION_ACTIVELINK,
+    OPTION_BLACKLIST,
     OPTION_COLOR,
     OPTION_COSMETICS,
     OPTION_FAVOURITE,
+    OPTION_ISBLACKLIST,
     OPTION_ISCOLOR,
     OPTION_ISSTYLE,
     OPTION_OTC,
@@ -139,12 +141,40 @@ document.getElementById(OPTION_ISSTYLE).addEventListener('change', function (e) 
 // подгружаем стиль
 chrome.storage.sync.get([OPTION_STYLE], function (result) {
     console.log('get style filter option');
-    document.getElementById(OPTION_STYLE).value = result[OPTION_STYLE];
+    document.getElementById(OPTION_STYLE).value = result[OPTION_STYLE] || '';
 });
 
 // сохраняем применение цены
 document.getElementById(OPTION_STYLE).addEventListener('change', function (e) {
     chrome.storage.sync.set({[OPTION_STYLE]: e.target.value}, function () {
         console.log('style option set to ' + e.target.value);
+    })
+});
+
+// подгружаем настройки фильтрации
+chrome.storage.sync.get([OPTION_ISBLACKLIST], function (result) {
+    console.log('is blacklist option');
+    document.getElementById(OPTION_ISBLACKLIST).checked = result[OPTION_ISBLACKLIST] === true;
+    document.getElementById(OPTION_BLACKLIST).disabled = !result[OPTION_ISBLACKLIST] === true
+});
+
+// сохраняем фильтрации избранного
+document.getElementById(OPTION_ISBLACKLIST).addEventListener('change', function (e) {
+    chrome.storage.sync.set({[OPTION_ISBLACKLIST]: e.target.checked}, function () {
+        console.log('is blacklist option set to ' + e.target.checked);
+        document.getElementById(OPTION_BLACKLIST).disabled = !e.target.checked
+    })
+});
+
+// подгружаем фильтр
+chrome.storage.sync.get([OPTION_BLACKLIST], function (result) {
+    console.log('get blacklist option');
+    document.getElementById(OPTION_BLACKLIST).value = result[OPTION_BLACKLIST] || '';
+});
+
+// сохраняем применение цены
+document.getElementById(OPTION_BLACKLIST).addEventListener('change', function (e) {
+    chrome.storage.sync.set({[OPTION_BLACKLIST]: e.target.value}, function () {
+        console.log('blacklist option set to ' + e.target.value);
     })
 });
