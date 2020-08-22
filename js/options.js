@@ -12,7 +12,8 @@ import {
     OPTION_OTC,
     OPTION_PRICE,
     OPTION_SHORTLONG,
-    OPTION_STYLE
+    OPTION_STYLE,
+    OPTION_UPDATE
 } from "/js/constants.mjs";
 
 
@@ -43,31 +44,31 @@ chrome.storage.sync.get([OPTION_OTC], function (result) {
     document.getElementById(OPTION_OTC).checked = result[OPTION_OTC] === true;
 });
 
-// сохраняем применение цвета
-document.getElementById(OPTION_ISCOLOR).addEventListener('change', function (e) {
-    chrome.storage.sync.set({[OPTION_ISCOLOR]: e.target.checked}, function () {
-        console.log('iscolor option set to ' + e.target.checked);
-    })
-});
+// // сохраняем применение цвета
+// document.getElementById(OPTION_ISCOLOR).addEventListener('change', function (e) {
+//     chrome.storage.sync.set({[OPTION_ISCOLOR]: e.target.checked}, function () {
+//         console.log('iscolor option set to ' + e.target.checked);
+//     })
+// });
+//
+// // подгружаем настройки
+// chrome.storage.sync.get([OPTION_ISCOLOR], function (result) {
+//     console.log('get iscolor filter option');
+//     document.getElementById(OPTION_ISCOLOR).checked = result[OPTION_ISCOLOR] === true;
+// });
 
-// подгружаем настройки
-chrome.storage.sync.get([OPTION_ISCOLOR], function (result) {
-    console.log('get iscolor filter option');
-    document.getElementById(OPTION_ISCOLOR).checked = result[OPTION_ISCOLOR] === true;
-});
-
-// сохраняем применение цвета
-document.getElementById(OPTION_COLOR).addEventListener('change', function (e) {
-    chrome.storage.sync.set({[OPTION_COLOR]: e.target.value}, function () {
-        console.log('color option set to ' + e.target.value);
-    })
-});
-
-// подгружаем настройки
-chrome.storage.sync.get([OPTION_COLOR], function (result) {
-    console.log('get Color filter option');
-    document.getElementById(OPTION_COLOR).value = result[OPTION_COLOR];
-});
+// // сохраняем применение цвета
+// document.getElementById(OPTION_COLOR).addEventListener('change', function (e) {
+//     chrome.storage.sync.set({[OPTION_COLOR]: e.target.value}, function () {
+//         console.log('color option set to ' + e.target.value);
+//     })
+// });
+//
+// // подгружаем настройки
+// chrome.storage.sync.get([OPTION_COLOR], function (result) {
+//     console.log('get Color filter option');
+//     document.getElementById(OPTION_COLOR).value = result[OPTION_COLOR];
+// });
 
 // сохраняем применение цены
 document.getElementById(OPTION_PRICE).addEventListener('change', function (e) {
@@ -112,14 +113,14 @@ document.getElementById(OPTION_SHORTLONG).addEventListener('change', function (e
 chrome.storage.sync.get([OPTION_ACTIVELINK], function (result) {
     console.log('get active link option');
     document.getElementById(OPTION_ACTIVELINK).checked = result[OPTION_ACTIVELINK] === true;
-    document.getElementById(OPTION_ISCOLOR).disabled = !result[OPTION_ACTIVELINK] === true
+    // document.getElementById(OPTION_ISCOLOR).disabled = !result[OPTION_ACTIVELINK] === true
 });
 
 // сохраняем фильтрации избранного
 document.getElementById(OPTION_ACTIVELINK).addEventListener('change', function (e) {
     chrome.storage.sync.set({[OPTION_ACTIVELINK]: e.target.checked}, function () {
         console.log('active link option set to ' + e.target.checked);
-        document.getElementById(OPTION_ISCOLOR).disabled = !e.target.checked
+        // document.getElementById(OPTION_ISCOLOR).disabled = !e.target.checked
     })
 });
 
@@ -177,4 +178,17 @@ document.getElementById(OPTION_BLACKLIST).addEventListener('change', function (e
     chrome.storage.sync.set({[OPTION_BLACKLIST]: e.target.value}, function () {
         console.log('blacklist option set to ' + e.target.value);
     })
+});
+
+// сохраняем создание кнопки Обновить
+document.getElementById(OPTION_UPDATE).addEventListener('change', function (e) {
+    chrome.storage.sync.set({[OPTION_UPDATE]: e.target.checked}, function () {
+        console.log('Update option set to ' + e.target.checked);
+    })
+});
+
+// подгружаем настройки
+chrome.storage.sync.get([OPTION_UPDATE], function (result) {
+    console.log('get Update filter option');
+    document.getElementById(OPTION_UPDATE).checked = result[OPTION_UPDATE] === true;
 });

@@ -21,6 +21,7 @@ export const OPTION_ISSTYLE = 'isstyle';
 export const OPTION_STYLE = 'style';
 export const OPTION_ISBLACKLIST = 'isblacklist';
 export const OPTION_BLACKLIST = 'blacklist';
+export const OPTION_UPDATE = 'update';
 export const USD_RUB = 'USDRUB';
 export const EUR_RUB = 'EURRUB';
 
