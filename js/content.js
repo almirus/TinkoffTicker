@@ -34,12 +34,11 @@ function changePage(listTickers) {
                     }).indexOf(possibleTicker);
                     // если нашли элемент и он не в черном списке
                     if (elementPos > -1 && !blacklist.includes(possibleTicker)) {
-                        let tail = ''.concat(listTickers[elementPos].symbol.isOTC && option.OTC ? '👑' : '🔗')
-                            .concat(option.shortlong ? (
-                                (listTickers[elementPos].symbol.shortIsEnabled ? 'S' : '') +
-                                '/' +
-                                (listTickers[elementPos].symbol.longIsEnabled ? 'L' : '')
-                            ) : '')
+                        let emoji = listTickers[elementPos].symbol.isOTC && option.OTC ? '👑' : '🔗';
+                        let tail = ''.concat(option.shortlong ? (
+                            (listTickers[elementPos].symbol.shortIsEnabled ? 'S' : '') +
+                            '/' +
+                            (listTickers[elementPos].symbol.longIsEnabled ? 'L' : '')) : '')
                             .concat(listTickers[elementPos].prices.last && option.price ? ` (${listTickers[elementPos].prices.last.value}${SHORT_CUR[listTickers[elementPos].prices.last.currency]})` : '');
                         return [
                             // в "объект для замены" обрамляем в стиль
@@ -48,19 +47,23 @@ function changePage(listTickers) {
                                 attrs: {
                                     "style": option.isstyle ? option.style : '',
                                 },
-                                // добавляем ссылку emoji цену шорт лонг
-                                content: option.activelink ? {
+                                // добавляем ссылку emoji (по нему опредялем что мы уже подифицировали тикера)
+                                content: possibleTicker + emoji
+
+                            },
+                            {
+                                ...(option.activelink && {
                                     name: 'a',
                                     attrs: {
                                         "href": listTickers[elementPos].symbol.link,
                                         "target": '_blank',
                                         "title": 'Открыть на странице брокера',
-                                        //"style": option.iscolor ? `background-color: ${option.color}` : '',
-                                    },
-                                    content: possibleTicker + tail
-                                } : possibleTicker + tail
-
-                            },
+                                        "style": option.iscolor ? `background-color: ${option.color}` : '',
+                                    }
+                                }),
+                                // добавляем цену шорт лонг
+                                content: tail || '⧉'
+                            }
                         ];
                     } else
                         return possibleTicker;
