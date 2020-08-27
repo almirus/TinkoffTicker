@@ -37,9 +37,10 @@ function changePage(listTickers) {
                         let emoji = listTickers[elementPos].symbol.isOTC && option.OTC ? '👑' : '🔗';
                         let tail = ''.concat(option.shortlong ? (
                             (listTickers[elementPos].symbol.shortIsEnabled ? 'S' : '') +
-                            '/' +
+                            (listTickers[elementPos].symbol.shortIsEnabled || listTickers[elementPos].symbol.longIsEnabled ? '/' : '') +
                             (listTickers[elementPos].symbol.longIsEnabled ? 'L' : '')) : '')
                             .concat(listTickers[elementPos].prices.last && option.price ? ` (${listTickers[elementPos].prices.last.value}${SHORT_CUR[listTickers[elementPos].prices.last.currency]})` : '');
+                        tail ||= option.activelink ? '⧉' : '';
                         return [
                             // в "объект для замены" обрамляем в стиль
                             {
@@ -62,7 +63,7 @@ function changePage(listTickers) {
                                     }
                                 }),
                                 // добавляем цену шорт лонг
-                                content: tail || '⧉'
+                                content: tail
                             }
                         ];
                     } else
@@ -158,10 +159,8 @@ function createUpdateButton() {
             document.onmousemove = null;
 
             chrome.storage.local.set({['button_x']: element.style.top}, function () {
-                console.info('set x', element.style.top)
             })
             chrome.storage.local.set({['button_y']: element.style.left}, function () {
-                console.info('set y', element.style.left)
             })
         }
     }
