@@ -40,7 +40,7 @@ function changePage(listTickers) {
                             (listTickers[elementPos].symbol.shortIsEnabled || listTickers[elementPos].symbol.longIsEnabled ? '/' : '') +
                             (listTickers[elementPos].symbol.longIsEnabled ? 'L' : '')) : '')
                             .concat(listTickers[elementPos].prices.last && option.price ? ` (${listTickers[elementPos].prices.last.value}${SHORT_CUR[listTickers[elementPos].prices.last.currency]})` : '');
-                        tail ||= option.activelink ? '⧉' : '';
+                        tail = tail || (option.activelink ? '⧉' : '');
                         return [
                             // в "объект для замены" обрамляем в стиль
                             {
