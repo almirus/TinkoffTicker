@@ -1,6 +1,15 @@
 'use strict';
 
-import {FAVORITE_URL, INFO_URL, PLURAL_SECURITY_TYPE, SEARCH_URL, SYMBOL_LINK} from "/js/constants.mjs";
+import {
+    FAVORITE_URL,
+    INFO_URL,
+    NEW_TICKERS,
+    PLURAL_SECURITY_TYPE,
+    SEARCH_URL,
+    SHELVES_URL,
+    SYMBOL_LINK,
+
+} from "/js/constants.mjs";
 
 
 chrome.runtime.onConnect.addListener(port => {
@@ -26,9 +35,114 @@ chrome.runtime.onConnect.addListener(port => {
                     }
                 )()
                 break;
+            case 'getNewTickers':
+                Promise.all([getNewTickers(), getIPO()]).then(([newTickers, IPOs]) => {
+                    port.postMessage(Object.assign({},
+                        {result: "newTickers"},
+                        {IPOs: IPOs},
+                        {newTickers: newTickers}));
+                    console.log("send list of new tickers.....");
+                });
+                break;
+            case 'cleanNewTickers':
+                Promise.all([getNewTickers(true), getIPO()]).then(([newTickers, IPOs]) => {
+                    port.postMessage(Object.assign({},
+                        {result: "newTickers"},
+                        {IPOs: IPOs},
+                        {newTickers: newTickers}));
+                    console.log("send list of new tickers.....");
+                });
+                break;
         }
     })
 });
+
+async function getIPO() {
+    let sessionId = await getTCSsession();
+    let response = await fetch(SHELVES_URL + sessionId, {
+        method: "GET",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+    });
+    let shelves = await response.json();
+
+    if (shelves.status.toLocaleUpperCase() === 'OK') {
+        return shelves.payload.shelves.filter(item => {
+            return item.shelfName && item.shelfName.toLocaleUpperCase() === 'РАЗМЕЩЕНИЯ'
+        })
+
+    } else {
+        console.log('Сервис поиска недоступен');
+        return undefined
+    }
+}
+
+async function getNewTickers(clean) {
+    let sessionId = await getTCSsession();
+    let search_obj = {
+        country: "All",
+        sortType: "ByPrice",
+        orderType: "Asc",
+    };
+    let response = await fetch(SEARCH_URL + sessionId, {
+        method: "POST",
+        body: JSON.stringify(search_obj),
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+    });
+    let listOfFound = await response.json();
+    let list = listOfFound.payload.values.reduce((result, item, index) => {
+        result.push({
+            ticker: item.symbol.ticker,
+            showName: item.symbol.showName,
+            isOTC: item.symbol.isOTC,
+            symbolType: item.symbol.symbolType,
+        });
+        return result;
+    }, []);
+    if (listOfFound.status.toLocaleUpperCase() === 'OK') {
+        async function getValue(name) {
+            return new Promise(resolve => {
+                chrome.storage.local.get(name, data => {
+                    resolve(data);
+                });
+            });
+        }
+
+        let newList = [];
+        // сохраненение нового списка newList останется undefined
+        if (!clean) {
+            // берем список ранее сохраненного списка
+            newList = await getValue(NEW_TICKERS);
+            newList = newList[NEW_TICKERS];
+        }
+        console.log('get old list');
+        if (newList?.length) {
+            // ищем разницу между списками
+            const different = newList.filter(o1 => !list.some(o2 => o1.ticker === o2.ticker));
+            // ищем одинаковые но которые поменяли флаг isOTC
+            let isNotOTC = newList.filter(o1 => list.some(o2 => o1.ticker === o2.ticker && o1.isOTC !== o2.isOTC));
+            // брокер возвращает дубли, удаляем
+            isNotOTC = isNotOTC.filter(item => {
+                return !item.isOTC
+            });
+            return {different: different, isNotOTC: isNotOTC};
+        } else {
+            chrome.storage.local.set({[NEW_TICKERS]: list}, () => {
+                console.log('save newtickets list');
+            })
+            return {different: undefined, isNotOTC: undefined};
+        }
+
+    } else {
+        console.log('Сервис поиска недоступен');
+        return undefined
+    }
+}
 
 // создаем список объектов с инф о тикере от брокера
 async function createLinks(list, sessionId) {
@@ -44,8 +158,8 @@ async function createLinks(list, sessionId) {
                             lotSize: item.symbol.lotSize,
                             isOTC: item.symbol.isOTC,
                             link: `${SYMBOL_LINK.replace('${securityType}', PLURAL_SECURITY_TYPE[item.symbol.symbolType || 'Stock'])}${item.symbol.ticker}`,
-                            longIsEnabled:item.symbol.longIsEnabled,
-                            shortIsEnabled:item.symbol.shortIsEnabled
+                            longIsEnabled: item.symbol.longIsEnabled,
+                            shortIsEnabled: item.symbol.shortIsEnabled
                         },
                         exchangeStatus: item.exchangeStatus
                     }

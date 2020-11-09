@@ -1,3 +1,26 @@
 .table{
     max-width: 50%;
 }
+.newsAnnounce {
+    background-position: center center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+.bordered{
+    border-bottom: solid 1px black;
+}
+.header {
+    width: 100%;
+}
+.newsAnnounce .white{
+    color: white;
+    text-shadow: 1px 1px 1px #000000;
+}
+
+.item{
+    background: lightgreen;
+    margin: 3px;
+    padding: 4px;
+    text-align: center;
+    display: inline-block;
+}

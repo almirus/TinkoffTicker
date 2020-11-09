@@ -10,7 +10,15 @@
 <div class="fieldsetRow">
     <div class="rightColumn">
         <fieldset class="table">
-            <iframe style="float: right" src="https://money.yandex.ru/quickpay/shop-widget?writer=seller&targets=%D0%BF%D0%BE%D0%BC%D0%BE%D1%87%D1%8C%20%D0%B0%D0%B2%D1%82%D0%BE%D1%80%D1%83&targets-hint=&default-sum=&button-text=13&hint=&successURL=&quickpay=shop&account=4100136581627" width="223" height="222" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
+            <fieldset style="float: right; width: 300px;height: 421px">
+                <legend>Новые тикеры у брокера</legend>
+                <button id="hideNewList" style="display: block;" title="Если нажать, учет изменений начнется с текущего списка бумаг">Скрыть списки</button>
+                <div id="newtickers_container"></div>
+            </fieldset>
+            <fieldset style="float: right; width: 230px;height: 232px">
+                <legend>Помощь</legend>
+                <iframe src="https://money.yandex.ru/quickpay/shop-widget?writer=seller&targets=%D0%BF%D0%BE%D0%BC%D0%BE%D1%87%D1%8C%20%D0%B0%D0%B2%D1%82%D0%BE%D1%80%D1%83&targets-hint=&default-sum=&button-text=13&hint=&successURL=&quickpay=shop&account=4100136581627" width="223" height="222" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
+            </fieldset>
             <legend>Настройки</legend>
             <input type="checkbox" value="0" name="cosmetic" id="cosmetic">
             <label for="cosmetic">Включить плагин</label>

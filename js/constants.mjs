@@ -6,8 +6,8 @@ export const HOST_URL = 'https://www.tinkoff.ru/';
 export const SYMBOL_LINK = 'https://www.tinkoff.ru/invest/${securityType}/';
 export const PING_URL = 'https://api.tinkoff.ru/v1/ping?sessionid=';
 export const FAVORITE_URL = 'https://api.tinkoff.ru/trading/user/get_favorites?sessionId=';
-
 export const SEARCH_URL = 'https://api.tinkoff.ru/trading/stocks/list?cpswc=true&ccc=true&deviceId=2cb59723b132726c&appVersion=4.0.2&platform=android&appName=investing&origin=mobile%2Cib5%2Cloyalty%2Cplatform&sessionId=';
+export const SHELVES_URL = 'https://api-invest.tinkoff.ru/catalog/shelves?y=omg&deviceId=2cb59723b132726c&appVersion=4.13.0&platform=android&appName=investing&origin=mobile%2Cib5%2Cloyalty%2Cplatform&sessionId=';
 export const INTERVAL_TO_CHECK = 1;//min
 export const OPTION_COSMETICS = 'cosmetic';
 export const OPTION_OTC = 'OTC';
@@ -24,6 +24,7 @@ export const OPTION_BLACKLIST = 'blacklist';
 export const OPTION_UPDATE = 'update';
 export const USD_RUB = 'USDRUB';
 export const EUR_RUB = 'EURRUB';
+export const NEW_TICKERS = 'newTickersList';
 
 export const PLURAL_SECURITY_TYPE = {
     Stock: 'stocks',
@@ -36,5 +37,5 @@ export const PLURAL_SECURITY_TYPE = {
 };
 
 export let port = chrome.runtime.connect({
-    name: "tcs_ticker"
+    name: "TinkoffTicker"
 });
