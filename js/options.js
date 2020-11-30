@@ -14,8 +14,8 @@ import {
     OPTION_SHORTLONG,
     OPTION_STYLE,
     OPTION_UPDATE,
-
 } from "/js/constants.mjs";
+
 const
     port = chrome.runtime.connect({
         name: "TinkoffTicker"
@@ -233,10 +233,11 @@ function renderTickers(object) {
     if (IPOs?.shelfSections.length) {
         buffer += '<h3>Первичное размещение</h3>';
         buffer += IPOs.shelfSections.map(item => {
-            return `<div title="подробности в приложении" class="newsAnnounce bordered" style="background-size: cover; background-image: url(${item.security?.logo.url})">
+            return `<div title="подробности в приложении" class="newsAnnounce bordered" style="background-size: cover; background-image: url(${item.security?.logo.url || item.picture})">
             <h2 class="header white">${item.name}</h2>
             <div class="announce white">${item.title}</div>
-            <div class="announce white">${item.security.asset.ticker}</div>`
+            <div class="announce white">${item.security?.asset.ticker || ('Корзина: ' + item.shortDescription)}</div>
+            </div>`
         }).join('');
     }
     buffer += '</div>';

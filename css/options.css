@@ -1,23 +1,40 @@
-.table{
+.table {
     max-width: 50%;
+    display: table;
+}
+
+.row {
+    display: table-row;
+    height: auto;
+}
+
+.column {
+    display: table-cell;
+}
+fieldset{
+    height: 100%;
 }
 .newsAnnounce {
+    padding: 5px;
     background-position: center center;
     background-repeat: no-repeat;
     cursor: pointer;
 }
-.bordered{
+
+.bordered {
     border-bottom: solid 1px black;
 }
+
 .header {
     width: 100%;
 }
-.newsAnnounce .white{
+
+.newsAnnounce .white {
     color: white;
     text-shadow: 1px 1px 1px #000000;
 }
 
-.item{
+.item {
     background: lightgreen;
     margin: 3px;
     padding: 4px;
