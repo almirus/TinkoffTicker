@@ -207,7 +207,7 @@ function removeTickerLinks() {
 chrome.storage.sync.get(['cosmetic', 'update'], result => {
     if (result.cosmetic) createTickerLinks();
     else removeTickerLinks();
-    if (result.update) createUpdateButton();
+    if (result.cosmetic && result.update) createUpdateButton();
 });
 
 // меняем контент страницы при установки \ снятии галочки

@@ -34,12 +34,32 @@ document.getElementById(OPTION_COSMETICS).addEventListener('change', function (e
     chrome.storage.sync.set({[OPTION_COSMETICS]: e.target.checked}, function () {
         console.log('Cosmetic option set to ' + e.target.checked);
     })
+    document.getElementById(OPTION_ACTIVELINK).disabled = !e.target.checked;
+    document.getElementById(OPTION_FAVOURITE).disabled = !e.target.checked;
+    document.getElementById(OPTION_SHORTLONG).disabled = !e.target.checked;
+    document.getElementById(OPTION_PRICE).disabled = !e.target.checked;
+    document.getElementById(OPTION_ISSTYLE).disabled = !e.target.checked;
+    document.getElementById(OPTION_ISCOLOR).disabled = !e.target.checked;
+    document.getElementById(OPTION_OTC).disabled = !e.target.checked;
+    document.getElementById(OPTION_UPDATE).disabled = !e.target.checked;
+    document.getElementById(OPTION_ISBLACKLIST).disabled = !e.target.checked;
+    document.getElementById(OPTION_BLACKLIST).disabled = !e.target.checked;
 });
 
 // подгружаем настройки
 chrome.storage.sync.get([OPTION_COSMETICS], function (result) {
     console.log('get Cosmetic filter option');
     document.getElementById(OPTION_COSMETICS).checked = result[OPTION_COSMETICS] === true;
+    document.getElementById(OPTION_ACTIVELINK).disabled = result[OPTION_COSMETICS] === false;
+    document.getElementById(OPTION_FAVOURITE).disabled = result[OPTION_COSMETICS] === false;
+    document.getElementById(OPTION_SHORTLONG).disabled = result[OPTION_COSMETICS] === false;
+    document.getElementById(OPTION_PRICE).disabled = result[OPTION_COSMETICS] === false;
+    document.getElementById(OPTION_ISSTYLE).disabled = result[OPTION_COSMETICS] === false;
+    document.getElementById(OPTION_ISCOLOR).disabled = result[OPTION_COSMETICS] === false;
+    document.getElementById(OPTION_OTC).disabled = result[OPTION_COSMETICS] === false;
+    document.getElementById(OPTION_UPDATE).disabled = result[OPTION_COSMETICS] === false;
+    document.getElementById(OPTION_ISBLACKLIST).disabled = result[OPTION_COSMETICS] === false;
+    document.getElementById(OPTION_BLACKLIST).disabled = result[OPTION_COSMETICS] === false;
 });
 
 
