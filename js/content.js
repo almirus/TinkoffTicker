@@ -24,11 +24,21 @@ port.onMessage.addListener(msg => {
 function changePage(listTickers) {
     if (!listTickers || listTickers.length === 0) return
     let textNodes = findAllTextNodes(document.body);
-    chrome.storage.sync.get(['OTC', 'price', 'iscolor', 'color', 'favourite', 'shortlong', 'activelink', 'isstyle', 'style', 'isblacklist', 'blacklist'], option => {
+    chrome.storage.sync.get(['OTC', 'price', 'iscolor', 'color', 'favourite', 'shortlong', 'activelink', 'isstyle', 'style', 'isblacklist', 'blacklist', 'isreplacer', 'replacer'], option => {
+        //массив для кастомной замены тикеров
+        let replacerList = option.isreplacer ? option.replacer.toUpperCase().split(',') : [];
         textNodes.forEach(textNode => {
             textNodeReplace(textNode, REPLACE_EXP, possibleTicker => {
                     // массив черного списка тикеров
                     let blacklist = option.isblacklist ? option.blacklist.toUpperCase().split(' ') : [];
+                    //заменяем найденные на страницы тикеры на кастомной от пользователя
+                    replacerList.forEach(replacer => {
+                        //если нашли разделитель, то заменяем
+                        if (~replacer.indexOf('=')) {
+                            let tickers = replacer.split('=');
+                            possibleTicker = possibleTicker === tickers[0].replace(/ /g,'') ? tickers[1] : possibleTicker;
+                        }
+                    });
                     let elementPos = listTickers.map(item => {
                         return item?.symbol?.ticker;
                     }).indexOf(possibleTicker);
@@ -48,7 +58,7 @@ function changePage(listTickers) {
                                 attrs: {
                                     "style": option.isstyle ? option.style : '',
                                 },
-                                // добавляем ссылку emoji (по нему опредялем что мы уже подифицировали тикера)
+                                // добавляем ссылку emoji (по нему определяем что мы уже модифицировали тикера)
                                 content: possibleTicker + emoji
 
                             },
@@ -188,13 +198,23 @@ function createUpdateButton() {
 // функция получает все тикеры по REGEXP со страницы и шлет его для обработки в background.js
 function createTickerLinks() {
     console.log('TinkoffTicker extension apply custom links');
-    chrome.storage.sync.get(['favourite'], result => {
+    chrome.storage.sync.get(['favourite', 'isreplacer', 'replacer'], option => {
+        //массив для кастомной замены тикеров
+        let replacerList = option.isreplacer ? option.replacer.toUpperCase().split(',') : [];
         let matches = [...document.body.innerText.matchAll(SEARCH_EXP)];
         // разворачиваем многомерный массив, в [0] хранятся найденные тикеры
         let tickers = matches.reduce((previousValue, currentValue, index, array) => previousValue.concat(array[index][0]), []);
         let unique = [...new Set(tickers)];
+        //заменяем найденные на страницы тикеры на кастомной от пользователя
+        replacerList.forEach(replacer => {
+            //если нашли разделитель, то заменяем
+            if (~replacer.indexOf('=')) {
+                let tickers = replacer.split('=');
+                unique = unique.map(item => item === tickers[0].replace(/ /g,'') ? tickers[1] : item);
+            }
+        })
         console.log(unique);
-        port.postMessage({method: "getTickers", params: {list: unique, isFavourite: result.favourite}});
+        port.postMessage({method: "getTickers", params: {list: unique, isFavourite: option.favourite}});
     });
 }
 

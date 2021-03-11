@@ -7,10 +7,10 @@ import {
     OPTION_COSMETICS,
     OPTION_FAVOURITE,
     OPTION_ISBLACKLIST,
-    OPTION_ISCOLOR,
+    OPTION_ISCOLOR, OPTION_ISREPLACER,
     OPTION_ISSTYLE,
     OPTION_OTC,
-    OPTION_PRICE,
+    OPTION_PRICE, OPTION_REPLACER,
     OPTION_SHORTLONG,
     OPTION_STYLE,
     OPTION_UPDATE,
@@ -203,6 +203,34 @@ document.getElementById(OPTION_ISBLACKLIST).addEventListener('change', function 
 chrome.storage.sync.get([OPTION_BLACKLIST], function (result) {
     console.log('get blacklist option');
     document.getElementById(OPTION_BLACKLIST).value = result[OPTION_BLACKLIST] || '';
+});
+
+// сохраняем список замены
+document.getElementById(OPTION_REPLACER).addEventListener('change', function (e) {
+    chrome.storage.sync.set({[OPTION_REPLACER]: e.target.value}, function () {
+        console.log('replace list set to ' + e.target.value);
+    })
+});
+
+// подгружаем список замены
+chrome.storage.sync.get([OPTION_REPLACER], function (result) {
+    console.log('get replacer list');
+    document.getElementById(OPTION_REPLACER).value = result[OPTION_REPLACER] || '';
+});
+
+// подгружаем настройки фильтрации
+chrome.storage.sync.get([OPTION_ISREPLACER], function (result) {
+    console.log('is replacer option');
+    document.getElementById(OPTION_ISREPLACER).checked = result[OPTION_ISREPLACER] === true;
+    document.getElementById(OPTION_REPLACER).disabled = !result[OPTION_ISREPLACER] === true
+});
+
+// сохраняем фильтрации избранного
+document.getElementById(OPTION_ISREPLACER).addEventListener('change', function (e) {
+    chrome.storage.sync.set({[OPTION_ISREPLACER]: e.target.checked}, function () {
+        console.log('is replacer set to ' + e.target.checked);
+        document.getElementById(OPTION_REPLACER).disabled = !e.target.checked
+    })
 });
 
 // сохраняем применение цены
